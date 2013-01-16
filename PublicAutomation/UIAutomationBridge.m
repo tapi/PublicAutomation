@@ -25,6 +25,13 @@
     return [NSClassFromString(@"UIATarget") localTarget];
 }
 
++ (UIAElement *)uiaElementFromObject:(id)object {
+	NSString *predicate = [NSString stringWithFormat:@"hash == %d", [object hash]];
+	UIAElement *element = [[self uiat] withPredicate:predicate];
+	
+	return element;
+}
+
 + (BOOL) checkForKeyboard {
     return [KIFTypist keyboardWindow] != nil;
 }
