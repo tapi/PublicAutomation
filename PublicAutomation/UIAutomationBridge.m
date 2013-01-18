@@ -15,8 +15,10 @@
 #define DEFAULT_DRAG_DURATION (0.10)
 #define NUM_POINTS_IN_DRAG (100)
 
+
 @implementation UIAutomationBridge
 
+#pragma mark - UIAutomation Access Hooks
 + (UIASyntheticEvents *)uia{
     return [NSClassFromString(@"UIASyntheticEvents") sharedEventGenerator];
 }
@@ -25,12 +27,16 @@
     return [NSClassFromString(@"UIATarget") localTarget];
 }
 
-+ (UIAElement *)uiaElementFromObject:(id)object {
-	NSString *predicate = [NSString stringWithFormat:@"hash == %d", [object hash]];
-	UIAElement *element = [[self uiat] withPredicate:predicate];
-	
-	return element;
-}
+/**
+ * This should work but the elementAtPositionString hangs resulting in a timeout
+ */
+//+ (UIAElement *)uiaElementFromObject:(UIView *)view {
+//	CGPoint centerPoint = [view convertPoint:view.center toView:nil];
+//	
+//	return [NSClassFromString(@"UIAElement") elementAtPosition:centerPoint];
+//}
+
+#pragma mark - Keyboard Methods
 
 + (BOOL) checkForKeyboard {
     return [KIFTypist keyboardWindow] != nil;
@@ -41,18 +47,7 @@
     return [KIFTypist enterText:string];
 }
 
-+ (CGPoint) tapView:(UIView *)view {
-    return [self tapView:view atPoint:CGPointCenteredInRect(view.bounds)];
-}
-
-+ (CGPoint) tapView:(UIView *)view atPoint:(CGPoint)point{
-    CGPoint tapPoint = [view convertPoint:point toView:nil];
-    NSLog(@"tapping at (%.2f,%.2f)", tapPoint.x,tapPoint.y);
-    [[self uia] sendTap:tapPoint];
-    
-    return tapPoint;
-}
-
+#pragma mark - Gesture Primatives
 + (CGPoint) downView:(UIView *)view {
     return [self downView:view atPoint:CGPointCenteredInRect(view.bounds)];
 }
@@ -81,6 +76,32 @@
     NSLog(@"up at (%.2f,%.2f)", point.x,point.y);
     [[self uia] liftUp:point];
     return point;
+}
+
+#pragma mark - Gestures
++ (CGPoint) tapView:(UIView *)view {
+    return [self tapView:view atPoint:CGPointCenteredInRect(view.bounds)];
+}
+
++ (CGPoint) tapView:(UIView *)view atPoint:(CGPoint)point{
+    CGPoint tapPoint = [view convertPoint:point toView:nil];
+    NSLog(@"tapping at (%.2f,%.2f)", tapPoint.x,tapPoint.y);
+    [[self uia] sendTap:tapPoint];
+    
+    return tapPoint;
+}
+
++ (void) tapView:(UIView *)view withOptions:(NSDictionary *)options {
+	NSDictionary *defaultOptions = @{@"tapCount" : @(1), @"touchCount" : @(1), @"duration" : @(0.0), @"tapOffset" : [NSValue valueWithCGPoint:CGPointZero]};
+	NSMutableDictionary *mergedOptions = [NSMutableDictionary dictionaryWithDictionary:defaultOptions];
+	[mergedOptions addEntriesFromDictionary:options];
+
+	CGPoint tapOffset = [options objectForKey:@"tapOffset"] ? [[options objectForKey:@"tapOffset"] CGPointValue] : CGPointZero;
+	
+	CGPoint elementTouchPoint = CGPointMake(tapOffset.x * view.bounds.size.width, tapOffset.y * view.bounds.size.height);
+	CGPoint convertedTouchPoint = [view convertPoint:elementTouchPoint toView:nil];
+	
+	[[self uiat] tap:[NSValue valueWithCGPoint:convertedTouchPoint] withOptions:options];
 }
 
 + (CGPoint) longTapView:(UIView *)view forDuration:(NSTimeInterval)duration{

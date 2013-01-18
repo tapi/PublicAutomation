@@ -49,4 +49,17 @@ typedef enum  {
 
 
 + (PADirection) parseDirection:(NSString *)direction;
+
+/**
+ * Performs the specified gesture on the specified view using a dictionary to specify gesture attributes.
+ *
+ * @param view The view to tap
+ * @param options The dictionary containing the gesture options.
+ *
+ * Designed to behave in the same fashion as the UIAutomation method.
+ * http://developer.apple.com/library/ios/#documentation/ToolsLanguages/Reference/UIAElementClassReference/UIAElement/UIAElement.html#//apple_ref/javascript/instm/UIAElement/tapWithOptions
+ *
+ * Because we need to use UIASyntheticEvents the duration option isn't used. 
+ */
++ (void)tapView:(UIView *)view withOptions:(NSDictionary *)options;
 @end
