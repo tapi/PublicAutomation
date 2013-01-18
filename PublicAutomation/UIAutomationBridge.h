@@ -61,5 +61,5 @@ typedef enum  {
  *
  * Because we need to use UIASyntheticEvents the duration option isn't used. 
  */
-+ (void)tapView:(UIView *)view withOptions:(NSDictionary *)options;
++ (CGPoint)tapView:(UIView *)view withOptions:(NSDictionary *)options;
 @end

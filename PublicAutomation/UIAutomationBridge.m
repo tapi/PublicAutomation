@@ -91,7 +91,7 @@
     return tapPoint;
 }
 
-+ (void) tapView:(UIView *)view withOptions:(NSDictionary *)options {
++ (CGPoint) tapView:(UIView *)view withOptions:(NSDictionary *)options {
 	NSDictionary *defaultOptions = @{@"tapCount" : @(1), @"touchCount" : @(1), @"duration" : @(0.0), @"tapOffset" : [NSValue valueWithCGPoint:CGPointZero]};
 	NSMutableDictionary *mergedOptions = [NSMutableDictionary dictionaryWithDictionary:defaultOptions];
 	[mergedOptions addEntriesFromDictionary:options];
@@ -102,6 +102,8 @@
 	CGPoint convertedTouchPoint = [view convertPoint:elementTouchPoint toView:nil];
 	
 	[[self uiat] tap:[NSValue valueWithCGPoint:convertedTouchPoint] withOptions:options];
+	
+	return convertedTouchPoint;
 }
 
 + (CGPoint) longTapView:(UIView *)view forDuration:(NSTimeInterval)duration{
