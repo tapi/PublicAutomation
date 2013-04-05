@@ -15,6 +15,20 @@
 #define DEFAULT_DRAG_DURATION (0.10)
 #define NUM_POINTS_IN_DRAG (100)
 
+@implementation UIView (testing)
+- (CGRect)frame
+{
+	NSLog(@"test");
+}
+@end
+
+@implementation UIAElement
+- (void)tapWithOptions:(id)arg1
+{
+	NSLog(@"Class: %@", NSStringFromClass([arg1 class]));
+}
+@end
+
 @implementation UIAutomationBridge
 
 + (UIASyntheticEvents *)uia{
